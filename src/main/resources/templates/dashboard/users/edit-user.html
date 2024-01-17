@@ -1,0 +1,85 @@
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head th:replace="dashboard/fragments/header.html :: headMeta (title = ${title})"></head>
+<body>
+
+<header th:replace="dashboard/fragments/header.html :: searchLogout"></header>
+
+<div class="container-fluid">
+  <div class="row">
+    <th:block th:replace="dashboard/fragments/left-menu.html :: menu"></th:block>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+      <div th:replace="dashboard/fragments/header.html :: breadcrumb ('Edit User')"></div>
+
+      <div class="col-md-12 col-lg-9">
+        <form th:action="@{/admin/user/update}" method="post" th:object="${userForm}">
+          <div class="row mb-3">
+            <label for="name" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" id="name" th:field="*{name}" required />
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" id="email" th:field="*{email}" required />
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="roles" class="col-sm-2 col-form-label">Role</label>
+            <div class="col-sm-10">
+              <select class="form-select" th:classappend="${#fields.hasErrors('roles')} ? 'is-invalid'" multiple aria-label="multiple select role" id="roles" name="roles" th:with="userRoles = *{roles}">
+                <option>Select Role</option>
+                <option th:each="role: ${roles}" th:value="${role.id}" th:text="${#strings.substringAfter(role.name, '_')}" th:selected="${#arrays.contains(userActiveRoles , role.id)}"></option>
+                <option th:value="${userRoles.toArray()}"></option>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></div>
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-10 offset-sm-2">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="enabled" name="active">
+                <label class="form-check-label" for="enabled">
+                  Enabled
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-danger me-md-2" type="button" data-bs-toggle="modal" data-bs-target="#cancelOperation">Cancel</button>
+            <button class="btn btn-success" type="submit">Update</button>
+          </div>
+          <input type="hidden" name="id" th:field="*{id}" />
+        </form>
+      </div>
+
+      <div class="modal fade" id="cancelOperation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Canceling operation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure that you wish to cancel editing an item?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+              <a class="btn btn-danger" th:href="@{/admin/users}" role="button">Yes</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+</body></html>

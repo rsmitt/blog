@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<footer class="blog-footer" th:fragment="footer">
+    <p th:text="|Copyright &copy; ${#dates.year(#dates.createNow())}|"></p>
+    <p><a href="#">Back to top</a></p>
+</footer>
+
+<p class="mt-5 mb-3 text-muted" th:fragment="loginFooter" th:text="|Copyright &copy; ${#dates.year(#dates.createNow())}|"></p>
+
+</body>
+</html>

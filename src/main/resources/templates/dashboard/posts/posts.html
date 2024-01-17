@@ -1,0 +1,106 @@
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head th:replace="dashboard/fragments/header.html :: headMeta (title = ${title})"></head>
+<body>
+
+<header th:replace="dashboard/fragments/header.html :: searchLogout"></header>
+
+<div class="container-fluid">
+  <div class="row">
+    <th:block th:replace="dashboard/fragments/left-menu.html :: menu"></th:block>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+      <div th:replace="dashboard/fragments/header.html :: breadcrumb ('Posts')"></div>
+
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a class="btn btn-primary btn-sm" th:href="@{/dashboard/post/add}" role="button">New Post</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Category</th>
+            <th scope="col">Viewed</th>
+            <th scope="col">Status</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Modified At</th>
+            <th scope="col">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="post, state : ${posts}">
+            <td><input type="checkbox" name="row" /></td>
+            <td th:text="${post.title}"></td>
+            <td th:text="${post.user.name}"></td>
+            <td th:text="${post.category.name}"></td>
+            <td th:text="${post.viewedTimes}"></td>
+            <td th:switch="${post.isActive}">
+              <span class="badge rounded-pill bg-success" th:case="${true}">Active</span>
+              <span class="badge rounded-pill bg-danger" th:case="*">Inactive</span>
+            </td>
+            <td th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#dates.format(post.modifiedAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+              <div class="d-grid gap-2 d-md-block">
+                  <a class="btn btn-primary btn-sm me-md-2" th:href="@{/dashboard/post/{id}/edit (id=${post.id})}" role="button">Edit</a>
+                  <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteItem" type="button" th:attr="onclick=|deleteItem('${post.id}')|">Delete</button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <nav aria-label="Page navigation" th:if="${posts.totalPages - 1 gt 0}">
+        <ul class="pagination justify-content-end">
+          <li class="page-item" th:classappend="${posts.number eq 0} ? 'disabled'">
+            <a class="page-link" tabindex="-1" aria-disabled="true" th:href="
+            @{/dashboard/posts
+            (page=${posts.number lt 2 ? 1 : posts.number}, size=${pageSize}, sortBy=${sortBy}, order=${order})}">Previous</a>
+          </li>
+
+          <li class="page-item" th:classappend="${posts.number + 1 eq posts.totalPages} ? 'disabled'">
+            <a class="page-link" th:href="@{/dashboard/posts
+            (page=${posts.number + 2}, size=${pageSize}, sortBy=${sortBy}, order=${order})}">Next</a>
+          </li>
+        </ul>
+      </nav>
+
+
+      <div class="modal fade" id="deleteItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Deleting item</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure that you wish to delete the item?
+            </div>
+            <div class="modal-footer">
+              <form th:action="@{/dashboard/post/delete}" method="post">
+                <input type="hidden" name="id" id="itemId"/>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-danger">Yes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  function deleteItem(itemId) {
+    document.getElementById("itemId").value = itemId;
+  }
+</script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+</body></html>

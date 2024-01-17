@@ -1,0 +1,81 @@
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+  <head th:replace="dashboard/fragments/header.html :: headMeta (title = ${title})"></head>
+<body>
+
+<header th:replace="dashboard/fragments/header.html :: searchLogout"></header>
+
+<div class="container-fluid">
+  <div class="row">
+    <th:block th:replace="dashboard/fragments/left-menu.html :: menu"></th:block>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+      <div th:replace="dashboard/fragments/header.html :: breadcrumb ('New Post')"></div>
+
+      <div class="col-md-12 col-lg-9">
+        <form th:action="@{/dashboard/post/add}" method="post" th:object="${postForm}">
+          <div class="row mb-3">
+            <label for="name" class="col-sm-2 col-form-label">Title</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'" id="name" th:field="*{title}" required />
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="category" class="col-sm-2 col-form-label">Category</label>
+            <div class="col-sm-10">
+              <select id="category" class="form-select" th:classappend="${#fields.hasErrors('category')} ? 'is-invalid'" aria-label="category select" name="category">
+                <option disabled selected value="">Choose a category</option>
+                <option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+              </select>
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="content" class="col-sm-2 col-form-label">Content</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="content" rows="3" th:field="*{content}" required></textarea>
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-sm-10 offset-sm-2">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="enabled" name="active">
+                <label class="form-check-label" for="enabled">
+                  Enabled
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-danger me-md-2" type="button" data-bs-toggle="modal" data-bs-target="#cancelOperation">Cancel</button>
+            <button class="btn btn-success" type="submit">Save</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal fade" id="cancelOperation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Canceling operation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure that you wish to cancel adding a new item?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+              <a class="btn btn-danger" th:href="@{/dashboard/posts}" role="button">Yes</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+</body></html>

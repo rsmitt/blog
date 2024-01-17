@@ -1,0 +1,98 @@
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head th:replace="dashboard/fragments/header.html :: headMeta (title = ${title})"></head>
+<body>
+
+<header th:replace="dashboard/fragments/header.html :: searchLogout"></header>
+
+<div class="container-fluid">
+  <div class="row">
+    <th:block th:replace="dashboard/fragments/left-menu.html :: menu"></th:block>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+      <div th:replace="dashboard/fragments/header.html :: breadcrumb ('Contacts')"></div>
+
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a class="btn btn-primary btn-sm" th:href="@{/admin/contact/add}" role="button">New Contact</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Url</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="contact, state : ${contacts}">
+            <td><input type="checkbox" name="row" /></td>
+            <td th:text="${contact.name}">VK</td>
+            <td th:text="${contact.url}">https://vk.com</td>
+            <td th:switch="${contact.isActive}">
+              <span class="badge rounded-pill bg-success" th:case="${true}">Active</span>
+              <span class="badge rounded-pill bg-danger" th:case="*">Inactive</span>
+            </td>
+            <td>
+              <div class="d-grid gap-2 d-md-block">
+                  <a class="btn btn-primary btn-sm me-md-2" th:href="@{/admin/contact/{id}/edit (id=${contact.id})}" role="button">Edit</a>
+                  <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteItem" type="button" th:attr="onclick=|deleteItem('${contact.id}')|">Delete</button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <nav aria-label="Page navigation" th:if="${contacts.totalPages - 1 gt 0}">
+        <ul class="pagination justify-content-end">
+          <li class="page-item" th:classappend="${contacts.number eq 0} ? 'disabled'">
+            <a class="page-link" tabindex="-1" aria-disabled="true" th:href="
+            @{/admin/contacts
+            (page=${contacts.number lt 2 ? 1 : contacts.number}, size=${pageSize}, sortBy=${sortBy}, order=${order})}">Previous</a>
+          </li>
+
+          <li class="page-item" th:classappend="${contacts.number + 1 eq contacts.totalPages} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/contacts
+            (page=${contacts.number + 2}, size=${pageSize}, sortBy=${sortBy}, order=${order})}">Next</a>
+          </li>
+        </ul>
+      </nav>
+
+
+      <div class="modal fade" id="deleteItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Deleting item</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure that you wish to delete the item?
+            </div>
+            <div class="modal-footer">
+              <form th:action="@{/admin/contact/delete}" method="post">
+                <input type="hidden" name="id" id="itemId"/>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-danger">Yes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  function deleteItem(itemId) {
+    document.getElementById("itemId").value = itemId;
+  }
+</script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+</body></html>

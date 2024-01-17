@@ -1,0 +1,26 @@
+spring:
+  sql:
+    init:
+      mode: always # need as we use not embedded in-memory database run data.sql
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:./blog.db;AUTO_SERVER=TRUE
+    username: sa
+    password: 123456
+  h2:
+    console:
+      enabled: true
+      settings:
+        trace: false
+  jpa:
+    #    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop # need to create schemas
+    defer-datasource-initialization: true # need to populate with sql.data
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http:www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<head th:fragment="headMeta(title)">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Dashboard | ' + ${title}"></title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"  rel="stylesheet">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+
+</head>
+
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow" th:fragment="searchLogout">
+
+    <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3">Hello, <span sec:authentication="principal.username"></span></span>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+    <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+            <a class="nav-link px-3" th:href="@{/logout}">Sign out</a>
+        </div>
+    </div>
+</header>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom" th:fragment="breadcrumb (currentPage)">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${currentPage}"></li>
+        </ol>
+    </nav>
+</div>
+
+</body>
+</html>
